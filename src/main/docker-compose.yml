@@ -1,0 +1,12 @@
+version: '3'
+services:
+  rest-server:
+    build: .
+    ports:
+      - "8081:8081"
+    container_name: dms_rest_server
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - .:/app
+    command: ./mvnw spring-boot:run
