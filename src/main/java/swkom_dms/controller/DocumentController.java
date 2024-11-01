@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import swkom_dms.service.DocumentService;
 
 @RestController
+@RequestMapping("/api/v1/documents")
 public class DocumentController {
 
     @Autowired

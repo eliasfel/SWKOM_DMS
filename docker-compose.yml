@@ -1,12 +1,23 @@
-version: '3'
+version: '3.8'
 services:
-  rest-server:
-    build: .
+  backend:
+    build:
+      context: .
     ports:
       - "8081:8081"
-    container_name: dms_rest_server
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-    volumes:
-      - .:/app
-    command: ./mvnw spring-boot:run
+    networks:
+      - dms-network
+
+  frontend:
+    build:
+      context: ./web-ui
+    ports:
+      - "8080:80"
+    networks:
+      - dms-network
+    depends_on:
+      - backend
+
+networks:
+  dms-network:
+    driver: bridge
