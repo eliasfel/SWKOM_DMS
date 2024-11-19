@@ -1,8 +1,9 @@
 document.getElementById("fetchDocuments").addEventListener("click", async function() {
     try {
-        const response = await fetch("http://localhost:8081/api/v1/documents");
+        const response = await fetch("http://localhost:8081/documents");
         if (response.ok) {
-            const data = await response.json();
+            const text = await response.text();
+            const data = { documents: text };
             document.getElementById("output").innerText = JSON.stringify(data, null, 2);
         } else {
             document.getElementById("output").innerText = "Failed to fetch documents.";
