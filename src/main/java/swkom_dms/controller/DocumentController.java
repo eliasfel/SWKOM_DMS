@@ -7,21 +7,19 @@ import org.springframework.web.bind.annotation.*;
 import swkom_dms.service.DocumentService;
 
 @RestController
-@RequestMapping("/api/v1/documents")
 public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
 
-    @GetMapping
+    @GetMapping("/documents")
     public ResponseEntity<String> getDocuments() {
         // Delegate the logic to the service
         return new ResponseEntity<>(documentService.getDocumentList(), HttpStatus.OK);
     }
 
-    @GetMapping("/upload")
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadDocument() {
-        // Delegate the logic to the service
         return new ResponseEntity<>(documentService.uploadDocument(), HttpStatus.OK);
     }
 }
