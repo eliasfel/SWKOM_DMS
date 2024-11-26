@@ -18,6 +18,18 @@ services:
     depends_on:
       - backend
 
+  postgres:
+    image: postgres:14
+    container_name: documentDB
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: documents_db
+    ports:
+      - "5432:5432"
+    networks:
+      - dms-network
+
 networks:
   dms-network:
     driver: bridge

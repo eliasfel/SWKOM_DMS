@@ -1,9 +1,0 @@
-server:
-  port: 8081   # optional since default
-
-springdoc:
-  api-docs:
-    path: /docs/api
-  swagger-ui:
-    path: /docs/swaggerui
-  enable: true
