@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class DocumentController {
 
     private DocumentService documentService;
@@ -26,10 +27,9 @@ public class DocumentController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<DocumentDTO> uploadDocument(@RequestBody @Valid DocumentDTO documentDTO) {
+    public void uploadDocument(@RequestBody @Valid DocumentDTO documentDTO) {
         // Pass the validated DTO to the service
         DocumentDTO savedDTO = documentService.uploadDocument(documentDTO);
-        return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
     }
 
 
