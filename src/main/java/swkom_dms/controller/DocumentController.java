@@ -13,9 +13,11 @@ import java.util.List;
 @RestController
 public class DocumentController {
 
-    @Autowired
     private DocumentService documentService;
-
+    @Autowired
+    public DocumentController( DocumentService documentService) {
+        this.documentService = documentService;
+    }
 
     @GetMapping("/documents")
     public ResponseEntity<List<DocumentDTO>> getDocuments() {
@@ -37,6 +39,16 @@ public class DocumentController {
         return documentService.getDocumentById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Void> updateDocument(@PathVariable Long id, @RequestBody @Valid DocumentDTO documentDTO) {
+        documentDTO.setId(id);  // Ensure the ID in the path is used.
+        if (documentService.updateDocument(documentDTO)) {
+            return ResponseEntity.noContent().build();  // 204 No Content when successful
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 404 Not Found if the ID doesn't exist
+        }
     }
 
     // Delete a document by its ID

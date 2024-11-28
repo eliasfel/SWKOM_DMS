@@ -15,11 +15,14 @@ import java.util.stream.Collectors;
 @Service
 public class DocumentService {
 
+    private final DocumentRepository documentRepository;
+    private final DocumentMapper documentMapper;
     @Autowired
-    private DocumentRepository documentRepository;
-
-    @Autowired
-    private DocumentMapper documentMapper;
+    public DocumentService(DocumentRepository documentRepository, DocumentMapper documentMapper)
+    {
+        this.documentRepository = documentRepository;
+        this.documentMapper = documentMapper;
+    }
 
     // Fetch all documents as DTOs
     public List<DocumentDTO> getDocumentList() {
@@ -45,6 +48,20 @@ public class DocumentService {
     public Optional<DocumentDTO> getDocumentById(Long id) {
         Optional<DocumentEntity> entity = documentRepository.findById(id);
         return entity.map(documentMapper::toDTO); // Convert Entity to DTO if present
+    }
+
+    public boolean updateDocument(@Valid DocumentDTO documentDTO) {
+
+        DocumentEntity documentEntity = documentMapper.toEntity(documentDTO);
+        if (documentRepository.existsById(documentEntity.getId())) {
+            try {
+                documentRepository.save(documentEntity);
+                return true;
+            } catch (RuntimeException e) {
+                throw e;
+            }
+        }
+        return false;
     }
 
     // Delete a document by ID
