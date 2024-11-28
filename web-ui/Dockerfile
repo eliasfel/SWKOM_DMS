@@ -1,5 +1,5 @@
 # Use the official Nginx image
-FROM nginx:alpine
+FROM nginx:latest
 
 # Copy the nginx configuration file to the container
 COPY nginx.conf /etc/nginx/conf.d/default.conf
