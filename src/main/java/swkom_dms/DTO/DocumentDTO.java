@@ -3,6 +3,8 @@ package swkom_dms.DTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public class DocumentDTO {
     private Long id;
 
@@ -10,8 +12,9 @@ public class DocumentDTO {
     @Size(max = 100, message = "Name must not exceed 100 characters")
     private String name;
 
-    @NotBlank(message = "Content must not be blank")
+    //@NotBlank(message = "Content must not be blank")
     private String content;
+    private LocalDateTime dateUploaded;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -22,4 +25,7 @@ public class DocumentDTO {
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+
+    public LocalDateTime getDateUploaded() { return dateUploaded; }
+    public void setDateUploaded(LocalDateTime dateUploaded) { this.dateUploaded = dateUploaded; }
 }

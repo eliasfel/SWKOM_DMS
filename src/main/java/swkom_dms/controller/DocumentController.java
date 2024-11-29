@@ -8,8 +8,11 @@ import swkom_dms.DTO.DocumentDTO;
 import swkom_dms.service.DocumentService;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost")
 @RestController
 @RequestMapping("/api")
 public class DocumentController {
@@ -27,9 +30,22 @@ public class DocumentController {
     }
 
     @PostMapping("/upload")
-    public void uploadDocument(@RequestBody @Valid DocumentDTO documentDTO) {
-        // Pass the validated DTO to the service
-        DocumentDTO savedDTO = documentService.uploadDocument(documentDTO);
+    public ResponseEntity<Void> uploadDocument(
+            @RequestParam("name") String name) {  // File as a request parameter
+
+        // Create the DocumentDTO object
+        DocumentDTO documentDTO = new DocumentDTO();
+        documentDTO.setName(name);
+        documentDTO.setContent(null);  // You can store the file content in the database later if needed
+        documentDTO.setDateUploaded(LocalDateTime.now());
+        try {
+            documentService.uploadDocument(documentDTO);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+
+
     }
 
 

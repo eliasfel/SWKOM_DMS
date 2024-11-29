@@ -33,15 +33,13 @@ public class DocumentService {
     }
 
     // Save a new document using DTO
-    public DocumentDTO uploadDocument(@Valid DocumentDTO documentDTO) {
+    public void uploadDocument(@Valid DocumentDTO documentDTO) {
         // Map DTO to Entity
         DocumentEntity documentEntity = documentMapper.toEntity(documentDTO);
 
         // Save to database
-        DocumentEntity savedEntity = documentRepository.save(documentEntity);
+        documentRepository.save(documentEntity);
 
-        // Map saved Entity back to DTO
-        return documentMapper.toDTO(savedEntity);
     }
 
     // Find a document by ID and return as DTO

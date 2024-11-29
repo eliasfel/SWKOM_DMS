@@ -83,7 +83,7 @@
                         <tr>
                             <th scope="row">${document.id}</th>
                             <td>${document.name}</td>  <!-- Update fields to match your DTO -->
-                            <td>${new Date(document.created).toLocaleDateString()}</td>
+                            <td>${new Date(document.dateUploaded).toLocaleString()}</td>
                             <td>
                                 <button class="btn btn-primary btn-sm view-btn" data-id="${document.id}">View</button>
                                 <button class="btn btn-danger btn-sm delete-btn" data-id="${document.id}">Delete</button>
