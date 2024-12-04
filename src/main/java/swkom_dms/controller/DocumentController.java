@@ -11,69 +11,92 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost")
 @RestController
 @RequestMapping("/api")
 public class DocumentController {
 
+    private static final Logger logger = LogManager.getLogger(DocumentController.class);
+
     private DocumentService documentService;
+
     @Autowired
-    public DocumentController( DocumentService documentService) {
+    public DocumentController(DocumentService documentService) {
         this.documentService = documentService;
     }
 
+    // Get all documents
     @GetMapping("/documents")
     public ResponseEntity<List<DocumentDTO>> getDocuments() {
+        logger.info("Fetching all documents.");
         List<DocumentDTO> documents = documentService.getDocumentList();
+        logger.info("Successfully fetched {} documents.", documents.size());
         return ResponseEntity.ok(documents);
     }
 
+    // Upload a new document
     @PostMapping("/upload")
-    public ResponseEntity<Void> uploadDocument(
-            @RequestParam("name") String name) {  // File as a request parameter
+    public ResponseEntity<Void> uploadDocument(@RequestParam("name") String name) {
+        logger.info("Received request to upload document with name: {}", name);
 
-        // Create the DocumentDTO object
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setName(name);
-        documentDTO.setContent(null);  // You can store the file content in the database later if needed
+        documentDTO.setContent(null); // Placeholder for file content
         documentDTO.setDateUploaded(LocalDateTime.now());
+
         try {
             documentService.uploadDocument(documentDTO);
+            logger.info("Document with name '{}' uploaded successfully.", name);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            logger.error("Error uploading document with name '{}'.", name, e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // Bad Request on failure
         }
-        return new ResponseEntity<>(HttpStatus.OK);
-
-
     }
 
-
-    // Get a document by its ID
+    // Get a document by ID
     @GetMapping("/documents/{id}")
     public ResponseEntity<DocumentDTO> getDocumentById(@PathVariable Long id) {
+        logger.info("Fetching document with ID: {}", id);
         return documentService.getDocumentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .map(documentDTO -> {
+                    logger.info("Document with ID: {} found.", id);
+                    return ResponseEntity.ok(documentDTO);
+                })
+                .orElseGet(() -> {
+                    logger.warn("Document with ID: {} not found.", id);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                });
     }
 
+    // Update an existing document
     @PutMapping("/update/{id}")
     public ResponseEntity<Void> updateDocument(@PathVariable Long id, @RequestBody @Valid DocumentDTO documentDTO) {
-        documentDTO.setId(id);  // Ensure the ID in the path is used.
+        logger.info("Received request to update document with ID: {}", id);
+
+        documentDTO.setId(id);  // Ensure the ID in the path is used
         if (documentService.updateDocument(documentDTO)) {
-            return ResponseEntity.noContent().build();  // 204 No Content when successful
+            logger.info("Document with ID: {} updated successfully.", id);
+            return ResponseEntity.noContent().build();  // 204 No Content
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 404 Not Found if the ID doesn't exist
+            logger.warn("Document with ID: {} not found, update failed.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 404 Not Found
         }
     }
 
-    // Delete a document by its ID
+    // Delete a document by ID
     @DeleteMapping("/documents/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+        logger.info("Received request to delete document with ID: {}", id);
         if (documentService.deleteDocumentById(id)) {
-            return ResponseEntity.noContent().build();
+            logger.info("Document with ID: {} deleted successfully.", id);
+            return ResponseEntity.noContent().build();  // 204 No Content
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logger.warn("Document with ID: {} not found, delete failed.", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 404 Not Found
         }
     }
 }
