@@ -8,6 +8,7 @@ import swkom_dms.DAL.repositories.DocumentRepository;
 import swkom_dms.DTO.DocumentDTO;
 import swkom_dms.mappers.DocumentMapper;
 import swkom_dms.service.DocumentService;
+import swkom_dms.service.EchoService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,12 +22,14 @@ class DocumentServiceTest {
     private DocumentRepository documentRepository;
     private DocumentMapper documentMapper;
     private DocumentService documentService;
+    private EchoService echoService;
 
     @BeforeEach
     void setUp() {
         documentRepository = mock(DocumentRepository.class);
         documentMapper = mock(DocumentMapper.class);
-        documentService = new DocumentService(documentRepository, documentMapper);
+        echoService = mock(EchoService.class);
+        documentService = new DocumentService(documentRepository, documentMapper, echoService);
     }
 
     @Test

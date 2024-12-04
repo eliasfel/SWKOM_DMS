@@ -22,11 +22,13 @@ public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final DocumentMapper documentMapper;
+    private final EchoService echoService;
     @Autowired
-    public DocumentService(DocumentRepository documentRepository, DocumentMapper documentMapper)
+    public DocumentService(DocumentRepository documentRepository, DocumentMapper documentMapper, EchoService echoService)
     {
         this.documentRepository = documentRepository;
         this.documentMapper = documentMapper;
+        this.echoService = echoService;
     }
 
     // Fetch all documents as DTOs
@@ -53,6 +55,7 @@ public class DocumentService {
 
             // Save to database
             documentRepository.save(documentEntity);
+            echoService.processMessage(documentEntity.getName(), 0);
             logger.info("Document uploaded successfully: {}", documentEntity.getId());
         } catch (Exception e) {
             logger.error("Failed to upload document: {}", documentDTO.getName(), e);
@@ -84,6 +87,7 @@ public class DocumentService {
             DocumentEntity documentEntity = documentMapper.toEntity(documentDTO);
             if (documentRepository.existsById(documentEntity.getId())) {
                 documentRepository.save(documentEntity);
+                echoService.processMessage(documentEntity.getName(), 0);
                 logger.info("Document updated successfully: {}", documentDTO.getId());
                 return true;
             } else {
