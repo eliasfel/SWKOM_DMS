@@ -63,6 +63,7 @@ public class DocumentService {
         }
     }
 
+
     // Find a document by ID and return as DTO
     public Optional<DocumentDTO> getDocumentById(Long id) {
         logger.info("Fetching document by ID: {}", id);

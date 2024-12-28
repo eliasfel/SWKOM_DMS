@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import swkom_dms.DTO.DocumentDTO;
 import swkom_dms.service.DocumentService;
 
@@ -39,21 +40,21 @@ public class DocumentController {
 
     // Upload a new document
     @PostMapping("/upload")
-    public ResponseEntity<Void> uploadDocument(@RequestParam("name") String name) {
+    public ResponseEntity<Void> uploadDocument(@RequestParam("name") String name, @RequestParam("file") MultipartFile file) {
         logger.info("Received request to upload document with name: {}", name);
 
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setName(name);
-        documentDTO.setContent(null); // Placeholder for file content
-        documentDTO.setDateUploaded(LocalDateTime.now());
-
         try {
+            documentDTO.setContent(new String(file.getBytes())); // Store file content as String or use Base64 encoding
+            documentDTO.setDateUploaded(LocalDateTime.now());
+
             documentService.uploadDocument(documentDTO);
             logger.info("Document with name '{}' uploaded successfully.", name);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("Error uploading document with name '{}'.", name, e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // Bad Request on failure
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

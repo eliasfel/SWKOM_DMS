@@ -10,6 +10,8 @@ public class DocumentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Lob // Use @Lob to store large objects like files
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "date_uploaded", nullable = false, updatable = false)

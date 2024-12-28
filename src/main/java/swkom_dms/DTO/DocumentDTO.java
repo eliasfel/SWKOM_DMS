@@ -12,7 +12,8 @@ public class DocumentDTO {
     @Size(max = 100, message = "Name must not exceed 100 characters")
     private String name;
 
-    //@NotBlank(message = "Content must not be blank")
+    @NotBlank(message = "Content must not be blank")
+    @Size(max = 100, message = "Name must not exceed 100 characters")
     private String content;
     private LocalDateTime dateUploaded;
 
