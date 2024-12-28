@@ -12,7 +12,7 @@ public class DocumentEntity {
     private String name;
     @Lob // Use @Lob to store large objects like files
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private byte[] content;
 
     @Column(name = "date_uploaded", nullable = false, updatable = false)
     private LocalDateTime dateUploaded;
@@ -24,8 +24,8 @@ public class DocumentEntity {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public byte[] getContent() { return content; }
+    public void setContent(byte[] content) { this.content = content; }
 
     public LocalDateTime getDateUploaded() { return dateUploaded; }
     public void setDateUploaded(LocalDateTime dateUploaded) { this.dateUploaded = dateUploaded; }

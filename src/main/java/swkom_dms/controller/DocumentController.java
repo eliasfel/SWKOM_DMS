@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swkom_dms.DTO.DocumentDTO;
+import swkom_dms.minIO.FileStorage;
 import swkom_dms.service.DocumentService;
 
 import jakarta.validation.Valid;
@@ -24,9 +25,12 @@ public class DocumentController {
 
     private DocumentService documentService;
 
+    private FileStorage fileStorage;
+
     @Autowired
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService, FileStorage fileStorage) {
         this.documentService = documentService;
+        this.fileStorage = fileStorage;
     }
 
     // Get all documents
@@ -46,8 +50,9 @@ public class DocumentController {
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setName(name);
         try {
-            documentDTO.setContent(new String(file.getBytes())); // Store file content as String or use Base64 encoding
+            documentDTO.setContent(file.getBytes()); // Store file content as String or use Base64 encoding
             documentDTO.setDateUploaded(LocalDateTime.now());
+            fileStorage.upload(file.getOriginalFilename(), file.getInputStream());
 
             documentService.uploadDocument(documentDTO);
             logger.info("Document with name '{}' uploaded successfully.", name);

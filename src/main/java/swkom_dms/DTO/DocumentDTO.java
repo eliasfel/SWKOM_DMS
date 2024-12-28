@@ -14,7 +14,7 @@ public class DocumentDTO {
 
     @NotBlank(message = "Content must not be blank")
     @Size(max = 100, message = "Name must not exceed 100 characters")
-    private String content;
+    private byte[] content;
     private LocalDateTime dateUploaded;
 
     // Getters and Setters
@@ -24,8 +24,8 @@ public class DocumentDTO {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public byte[] getContent() { return content; }
+    public void setContent(byte[] content) { this.content = content; }
 
     public LocalDateTime getDateUploaded() { return dateUploaded; }
     public void setDateUploaded(LocalDateTime dateUploaded) { this.dateUploaded = dateUploaded; }

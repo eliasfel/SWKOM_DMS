@@ -10,6 +10,7 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+      - minio
 
   frontend:
     build:
@@ -45,6 +46,22 @@ services:
     networks:
       - dms-network
 
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: "minioaccesskey"  # MinIO Access Key
+      MINIO_ROOT_PASSWORD: "miniosecretkey"  # MinIO Secret Key
+    ports:
+      - "9000:9000"  # MinIO API port
+      - "9090:9090"  # MinIO Console port (changed to 9090)
+    command: server /data --console-address ":9090"  # Custom console address
+    networks:
+      - dms-network
+
 networks:
   dms-network:
     driver: bridge
+
+volumes:
+  minio_data:  # Volume for MinIO to store files
