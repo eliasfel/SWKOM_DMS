@@ -48,11 +48,12 @@ public class DocumentController {
         logger.info("Received request to upload document with name: {}", name);
 
         DocumentDTO documentDTO = new DocumentDTO();
-        documentDTO.setName(name);
+        documentDTO.setName(file.getOriginalFilename());
         try {
             documentDTO.setContent(file.getBytes()); // Store file content as String or use Base64 encoding
             documentDTO.setDateUploaded(LocalDateTime.now());
             fileStorage.upload(file.getOriginalFilename(), file.getInputStream());
+            logger.info("filename is '{}'", file.getOriginalFilename());
 
             documentService.uploadDocument(documentDTO);
             logger.info("Document with name '{}' uploaded successfully.", name);

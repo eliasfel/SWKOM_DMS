@@ -19,10 +19,14 @@ public class EchoService {
         this.rabbit = rabbit;
     }
 
-    @RabbitListener(queues = RabbitMQConfig.ECHO_IN_QUEUE_NAME)
     public void processMessage(String message, @Header(RabbitMQConfig.ECHO_MESSAGE_COUNT_PROPERTY_NAME) int messageCount) {
         log.info("Recieved Message #" + messageCount+ ": " + message);
-        rabbit.convertAndSend(RabbitMQConfig.ECHO_OUT_QUEUE_NAME, "Echo " + message);
-        log.info("Sent Message: Echo " + message);
+        rabbit.convertAndSend("", RabbitMQConfig.OCR_QUEUE, message);
+        log.info("Sent document name to OCR_QUEUE" + message);
+    }
+
+    @RabbitListener(queues = RabbitMQConfig.RESULT_QUEUE)
+    public void handleOCRResult(String ocrResult) {
+        log.info("Received OCR result: {}", ocrResult);
     }
 }

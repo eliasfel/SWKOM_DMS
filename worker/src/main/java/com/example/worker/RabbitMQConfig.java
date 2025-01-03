@@ -1,6 +1,6 @@
-package swkom_dms;
+package com.example.worker;
 
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,11 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String EXCHANGE = "";
-
     public static final String OCR_QUEUE = "ocr_queue";
     public static final String RESULT_QUEUE = "result_queue";
-
-    public static final String ECHO_MESSAGE_COUNT_PROPERTY_NAME = "MessageCount";
 
     @Bean
     public Queue ocrQueue() {
@@ -23,8 +20,9 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue resultQueue() { return new Queue(RESULT_QUEUE, false); }
-
+    public Queue resultQueue() {
+        return new Queue(RESULT_QUEUE, false);
+    }
 
     @Bean
     public ConnectionFactory connectionFactory() {

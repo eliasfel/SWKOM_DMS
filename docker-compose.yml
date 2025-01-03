@@ -59,6 +59,18 @@ services:
     networks:
       - dms-network
 
+  worker:
+    build: worker/
+    container_name: workerContainer
+    restart: no
+    ports:
+      - "8082:8082"
+    depends_on:
+      - rabbitmq
+      - minio
+    networks:
+      - dms-network
+
 networks:
   dms-network:
     driver: bridge
