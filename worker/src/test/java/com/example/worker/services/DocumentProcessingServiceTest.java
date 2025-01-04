@@ -34,7 +34,7 @@ public class DocumentProcessingServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // Any setup needed before each test can go here
+        // setup needed before each test can go here
     }
 
     @Test
