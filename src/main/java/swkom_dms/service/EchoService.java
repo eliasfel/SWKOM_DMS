@@ -20,9 +20,9 @@ public class EchoService {
     }
 
     public void processMessage(String message, @Header(RabbitMQConfig.ECHO_MESSAGE_COUNT_PROPERTY_NAME) int messageCount) {
-        log.info("Recieved Message #" + messageCount+ ": " + message);
+        log.info("Received Message #" + messageCount+ ": " + message);
         rabbit.convertAndSend("", RabbitMQConfig.OCR_QUEUE, message);
-        log.info("Sent document name to OCR_QUEUE" + message);
+        log.info("The following document was sent to OCR_QUEUE: " + message);
     }
 
     @RabbitListener(queues = RabbitMQConfig.RESULT_QUEUE)

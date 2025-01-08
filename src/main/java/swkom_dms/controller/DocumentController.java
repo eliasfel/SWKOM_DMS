@@ -56,7 +56,7 @@ public class DocumentController {
             logger.info("filename is '{}'", file.getOriginalFilename());
 
             documentService.uploadDocument(documentDTO);
-            logger.info("Document with name '{}' uploaded successfully.", name);
+            logger.info("Document with name '{}.pdf' uploaded successfully.", name);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error uploading document with name '{}'.", name, e);

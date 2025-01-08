@@ -89,7 +89,7 @@ public class DocumentService {
             if (documentRepository.existsById(documentEntity.getId())) {
                 documentRepository.save(documentEntity);
                 echoService.processMessage(documentEntity.getName(), 0);
-                logger.info("Document updated successfully: {}", documentDTO.getId());
+                logger.info("Document updated successfully: {}(ID)", documentDTO.getId());
                 return true;
             } else {
                 logger.warn("Document with ID {} not found for update.", documentDTO.getId());
