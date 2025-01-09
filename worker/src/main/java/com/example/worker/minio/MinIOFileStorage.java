@@ -18,7 +18,7 @@ public class MinIOFileStorage implements FileStorage {
     private final MinioClient minioClient;
 
     @Autowired
-    MinIOFileStorage(MinIOConfig minIOConfig, MinioClient minioClient) {
+    public MinIOFileStorage(MinIOConfig minIOConfig, MinioClient minioClient) {
         this.minIOConfig = minIOConfig;
         this.minioClient = minioClient;
     }
@@ -61,15 +61,16 @@ public class MinIOFileStorage implements FileStorage {
     @Override
     public byte[] download(String objectName) {
         try {
-            return IOUtils.toByteArray(minioClient.getObject(
+            GetObjectResponse response = minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(minIOConfig.getBucketName())
                             .object(objectName)
-                            .build()));
-        } catch (ServerException | InvalidResponseException | InsufficientDataException | IOException |
-                 NoSuchAlgorithmException | InvalidKeyException | ErrorResponseException | XmlParserException |
-                 InternalException e) {
+                            .build()
+            );
+            return response.readAllBytes();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 }
