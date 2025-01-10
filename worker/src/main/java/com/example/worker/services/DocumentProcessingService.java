@@ -1,6 +1,9 @@
 package com.example.worker.services;
 
+import com.example.worker.elasticSearch.SearchIndexService;
+import com.example.worker.elasticSearch.entities.DocumentEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +22,14 @@ public class DocumentProcessingService {
     private final MinIOFileStorage minioService;
     private final OCRWorker ocrWorker;
     private final RabbitTemplate rabbitTemplate;
+    private final SearchIndexService searchIndexService;
 
     @Autowired
-    public DocumentProcessingService(MinIOFileStorage minioService, OCRWorker ocrWorker, RabbitTemplate rabbitTemplate) {
+    public DocumentProcessingService(MinIOFileStorage minioService, OCRWorker ocrWorker, RabbitTemplate rabbitTemplate, SearchIndexService searchIndexService) {
         this.minioService = minioService;
         this.ocrWorker = ocrWorker;
         this.rabbitTemplate = rabbitTemplate;
+        this.searchIndexService = searchIndexService;
     }
 
     @RabbitListener(queues = RabbitMQConfig.OCR_QUEUE)
@@ -52,9 +57,20 @@ public class DocumentProcessingService {
             rabbitTemplate.convertAndSend("", RabbitMQConfig.RESULT_QUEUE, extractedContent);
             log.info("Sent OCR result to RabbitMQ for further processing");
 
+            DocumentEntity document = new DocumentEntity();
+            document.setContent(JsonNullable.of(extractedContent));
+            document.setName(JsonNullable.of(objectName));
+
+            try {
+                searchIndexService.indexDocument(document);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+
         } catch (Exception e) {
             log.error("Error processing document {}: {}", objectName, e.getMessage(), e);
         }
+
     }
 }
 

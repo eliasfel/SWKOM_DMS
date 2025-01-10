@@ -1,5 +1,5 @@
 package com.example.worker.elasticSearch;
-/*
+
 import co.elastic.clients.elasticsearch._types.Result;
 import com.example.worker.elasticSearch.entities.DocumentEntity;
 
@@ -13,4 +13,3 @@ public interface SearchIndexService {
 
     boolean deleteDocumentById(int id);
 }
-*/

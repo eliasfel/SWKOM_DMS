@@ -1,5 +1,5 @@
 package com.example.worker.elasticSearch;
-/*
+
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
@@ -23,7 +23,11 @@ public class ElasticSearchService implements SearchIndexService {
     @Autowired
     public ElasticSearchService(ElasticsearchClient esClient) throws IOException {
         this.esClient = esClient;
+    }
 
+    @Override
+    public Result indexDocument(DocumentEntity document) throws IOException {
+        // do indexing with ElasticSearch
         if (!esClient.indices().exists(
                 i -> i.index(ElasticSearchConfig.DOCUMENTS_INDEX_NAME)
         ).value()) {
@@ -31,11 +35,7 @@ public class ElasticSearchService implements SearchIndexService {
                     .index(ElasticSearchConfig.DOCUMENTS_INDEX_NAME)
             );
         }
-    }
 
-    @Override
-    public Result indexDocument(DocumentEntity document) throws IOException {
-        // do indexing with ElasticSearch
         IndexResponse response = esClient.index(i -> i
                 .index(ElasticSearchConfig.DOCUMENTS_INDEX_NAME)
                 .id(document.getId().toString())
@@ -78,5 +78,4 @@ public class ElasticSearchService implements SearchIndexService {
             log.warn(result.toString());
         return result.result()==Result.Deleted;
     }
-
-}*/
+}

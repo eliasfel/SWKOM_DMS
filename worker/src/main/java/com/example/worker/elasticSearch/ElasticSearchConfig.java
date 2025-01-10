@@ -1,5 +1,5 @@
 package com.example.worker.elasticSearch;
-/*
+
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
@@ -25,7 +25,7 @@ public class ElasticSearchConfig
     @Bean
     public RestClient getRestClient() {
         return RestClient.builder(
-                new HttpHost(host, port)).build();
+                new HttpHost(host, port, "http")).build();
     }
 
     @Bean
@@ -43,4 +43,4 @@ public class ElasticSearchConfig
         return new ElasticsearchClient(getElasticsearchTransport());
     }
 
-}*/
+}
