@@ -13,6 +13,7 @@ import com.example.worker.services.OCRWorker;
 import com.example.worker.minio.MinIOFileStorage;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 @Component
@@ -58,13 +59,14 @@ public class DocumentProcessingService {
             log.info("Sent OCR result to RabbitMQ for further processing");
 
             DocumentEntity document = new DocumentEntity();
+            document.setId(System.currentTimeMillis());
             document.setContent(JsonNullable.of(extractedContent));
             document.setName(JsonNullable.of(objectName));
 
             try {
                 searchIndexService.indexDocument(document);
-            } catch (Exception e) {
-                log.error(e.getMessage());
+            } catch (IOException e) {
+                log.error("Failed to index document", e);
             }
 
         } catch (Exception e) {

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Entity
 public class DocumentEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private JsonNullable<String> name = JsonNullable.undefined();
 
