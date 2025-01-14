@@ -126,7 +126,7 @@
     }
 
     function exportDocuments() {
-        fetch('/documents/export', { method: 'GET' })
+        fetch('http://localhost:8081/api/documents/export', { method: 'GET' })
             .then(response => {
                 if (response.ok) {
                     return response.blob(); // Get file data as a blob

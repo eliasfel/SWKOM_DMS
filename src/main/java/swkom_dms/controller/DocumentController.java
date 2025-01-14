@@ -46,11 +46,17 @@ public class DocumentController {
 
     @GetMapping("/documents/export")
     public ResponseEntity<byte[]> exportDocumentList() {
-        byte[] fileData = documentService.generateExportFile();
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=document_list.csv")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(fileData);
+        try {
+            byte[] fileData = documentService.generateExportFile();
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=document_list.csv")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(fileData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
+                    .body(("Error exporting documents: " + e.getMessage()).getBytes());
+        }
     }
 
 
