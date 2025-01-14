@@ -10,9 +10,12 @@ import swkom_dms.mappers.DocumentMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import jakarta.validation.Valid;
+
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.opencsv.CSVWriter;
 
 @Service
 public class DocumentService {
@@ -44,6 +47,29 @@ public class DocumentService {
             logger.error("Error occurred while fetching documents.", e);
             throw e;
         }
+    }
+
+    public byte[] generateExportFile() {
+        List<DocumentEntity> documents = documentRepository.findAll();
+        StringWriter stringWriter = new StringWriter();
+
+        try (CSVWriter writer = new CSVWriter(stringWriter)) {
+            // Write headers
+            writer.writeNext(new String[]{"ID", "Name", "UploadDate"});
+
+            // Write document data
+            for (DocumentEntity doc : documents) {
+                writer.writeNext(new String[]{
+                        String.valueOf(doc.getId()),
+                        doc.getName(),
+                        doc.getDateUploaded().toString()
+                });
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error while generating CSV", e);
+        }
+
+        return stringWriter.toString().getBytes();
     }
 
     // Save a new document using DTO
