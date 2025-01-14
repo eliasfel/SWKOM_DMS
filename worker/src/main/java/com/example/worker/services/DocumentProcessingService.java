@@ -15,6 +15,7 @@ import com.example.worker.minio.MinIOFileStorage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -59,7 +60,7 @@ public class DocumentProcessingService {
             log.info("Sent OCR result to RabbitMQ for further processing");
 
             DocumentEntity document = new DocumentEntity();
-            document.setId(System.currentTimeMillis());
+            document.setId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
             document.setContent(JsonNullable.of(extractedContent));
             document.setName(JsonNullable.of(objectName));
 
