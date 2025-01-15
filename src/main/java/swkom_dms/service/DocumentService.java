@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import jakarta.validation.Valid;
 
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,24 +54,30 @@ public class DocumentService {
         List<DocumentEntity> documents = documentRepository.findAll();
         StringWriter stringWriter = new StringWriter();
 
-        try (CSVWriter writer = new CSVWriter(stringWriter)) {
+        try (CSVWriter writer = new CSVWriter(stringWriter,
+                CSVWriter.DEFAULT_SEPARATOR,
+                CSVWriter.DEFAULT_QUOTE_CHARACTER,
+                CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                CSVWriter.DEFAULT_LINE_END)) {
             // Write headers
-            writer.writeNext(new String[]{"ID", "Name", "UploadDate"});
+            writer.writeNext(new String[]{"ID", "Name", "Upload Date"});
 
             // Write document data
             for (DocumentEntity doc : documents) {
                 writer.writeNext(new String[]{
-                        String.valueOf(doc.getId()),
-                        doc.getName(),
-                        doc.getDateUploaded().toString()
+                        String.valueOf(doc.getId()),   // ID
+                        doc.getName(),                // Name
+                        doc.getDateUploaded().toString() // Upload Date
                 });
             }
         } catch (Exception e) {
             throw new RuntimeException("Error while generating CSV", e);
         }
 
-        return stringWriter.toString().getBytes();
+        // Return as byte array
+        return stringWriter.toString().getBytes(StandardCharsets.UTF_8);
     }
+
 
     // Save a new document using DTO
     public void uploadDocument(@Valid DocumentDTO documentDTO) {
