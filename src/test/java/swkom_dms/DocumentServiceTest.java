@@ -13,6 +13,7 @@ import swkom_dms.service.EchoService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -111,4 +112,44 @@ class DocumentServiceTest {
 
         verify(documentRepository, times(1)).findAll();
     }
+
+    @Test
+    void testGenerateExportFile_Success() {
+        DocumentEntity doc1 = new DocumentEntity();
+        doc1.setId(1L);
+        doc1.setName("Document 1");
+        doc1.setDateUploaded(LocalDateTime.of(2023, 1, 1, 10, 0));
+
+        DocumentEntity doc2 = new DocumentEntity();
+        doc2.setId(2L);
+        doc2.setName("Document 2");
+        doc2.setDateUploaded(LocalDateTime.of(2023, 2, 1, 11, 30));
+
+        when(documentRepository.findAll()).thenReturn(List.of(doc1, doc2));
+
+        byte[] csvBytes = documentService.generateExportFile();
+        String csvContent = new String(csvBytes, StandardCharsets.UTF_8);
+
+        // Verify the CSV content
+        String expectedHeader = "\"ID\",\"Name\",\"Upload Date\"";
+        String expectedRow1 = "\"1\",\"Document 1\",\"2023-01-01T10:00\"";
+        String expectedRow2 = "\"2\",\"Document 2\",\"2023-02-01T11:30\"";
+
+        assertTrue(csvContent.contains(expectedHeader));
+        assertTrue(csvContent.contains(expectedRow1));
+        assertTrue(csvContent.contains(expectedRow2));
+
+        verify(documentRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testGenerateExportFile_Exception() {
+        when(documentRepository.findAll()).thenThrow(new RuntimeException("Error while generating CSV"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> documentService.generateExportFile());
+        assertEquals("Error while generating CSV", exception.getMessage());
+
+        verify(documentRepository, times(1)).findAll();
+    }
+
 }
